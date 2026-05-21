@@ -171,6 +171,7 @@ header.site.scrolled {
 }
 
 .brand { display: flex; align-items: center; gap: 0.6rem; }
+.brand a.bk { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: inherit; }
 .brand .mark { color: var(--text); display: grid; place-items: center; }
 .brand .mark svg { display: block; }
 .brand .name {
@@ -611,6 +612,8 @@ footer.site .fp {
   font-size: 0.62rem; letter-spacing: 0.1em;
   color: var(--faint); text-transform: uppercase;
 }
+footer.site .fp a { color: var(--muted); text-decoration: none; }
+footer.site .fp a:hover { color: var(--text); }
 footer.site .arch-foot { color: var(--line-deco); }
 
 /* twinkle */
@@ -630,6 +633,7 @@ footer.site .arch-foot { color: var(--line-deco); }
 <!-- ───── HEADER ───── -->
 <header class="site" id="site-header">
   <div class="brand">
+    <a class="bk" href="https://guidestartutors.github.io/Home/" aria-label="Back to Guidestar Tutors home">
     <span class="mark" aria-hidden="true">
       <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.3">
         <circle cx="13" cy="13" r="9" stroke-dasharray="2.5 3"/>
@@ -639,8 +643,10 @@ footer.site .arch-foot { color: var(--line-deco); }
       </svg>
     </span>
     <span class="name">Guidestar <span style="color:var(--faint);font-weight:400;font-size:0.8em;font-style:italic;">tutors</span></span>
+    </a>
   </div>
   <nav class="top-nav">
+    <a href="https://guidestartutors.github.io/Home/" class="nav-link">[ ← Home ]</a>
     <a href="#circle" class="nav-link">[ 01 ] Circle</a>
     <a href="#waves" class="nav-link">[ 02 ] Waves</a>
     <a href="#learn" class="nav-link">[ 03 ] Notes</a>
@@ -785,7 +791,7 @@ footer.site .arch-foot { color: var(--line-deco); }
   <footer class="site">
     <span class="fp">✦ Guidestar Tutors — made for curious learners</span>
     <svg class="arch-foot" width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M2 19 V11 a18 8 0 0 1 36 0 V19"/></svg>
-    <span class="fp">// θ ∈ [0°, 360°]</span>
+    <span class="fp"><a href="https://guidestartutors.github.io/Home/">// back to home</a></span>
   </footer>
 
 </div>
