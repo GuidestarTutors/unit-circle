@@ -1,478 +1,906 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unit Circle — Sin, Cos & Tan</title>
+<title>The Unit Circle — Sin · Cos · Tan, Visually</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Montserrat:wght@400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ───────────────────────────  THEME TOKENS  ─────────────────────────── */
 :root {
-  --bg: #0d0e0f;
-  --bg2: #141516;
-  --bg3: #1c1d1e;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.13);
-  --text: #e8e4dc;
-  --muted: #7a776f;
-  --cos: #6eb5ff;
-  --sin: #6dffc4;
-  --tan: #ffb86c;
+  /* surfaces */
+  --bg-base:    #F4EFE6;
+  --bg-base-2:  #FAF6EF;
+  --surface:    #FCFAF5;
+  --surface-2:  #F7F2E9;
+  --inset:      #F1EADD;
+
+  /* text */
+  --text:       #1E1B17;
+  --muted:      #6B6560;
+  --faint:      #9A938A;
+
+  /* lines */
+  --line:       rgba(40,34,28,0.10);
+  --line-2:     rgba(40,34,28,0.18);
+  --line-deco:  rgba(40,34,28,0.32);
+
+  /* trig accents (pulled toward palette, kept readable on cream) */
+  --cos:        #5E86B8;   /* sky        */
+  --sin:        #6E9E7E;   /* sage       */
+  --tan:        #C98A6A;   /* warm coral */
+  --cos-soft:   rgba(94,134,184,0.16);
+  --sin-soft:   rgba(110,158,126,0.16);
+  --tan-soft:   rgba(201,138,106,0.16);
+  --point:      #5B5048;
+
+  /* iridescent signature sweep */
+  --grad: linear-gradient(110deg,#FFB4A2 0%,#FFC9B0 16%,#FFE8A3 33%,#A8C5A0 52%,#9DB8D6 70%,#C3B0D8 86%,#E8B4C8 100%);
+
+  /* solid pastel for buttons */
+  --accent:     #B9A4D4;
+  --accent-ink: #4A3F5C;
+
+  --shadow:     0 1px 2px rgba(70,55,40,0.04), 0 8px 24px rgba(70,55,40,0.07);
+  --shadow-lg:  0 2px 6px rgba(70,55,40,0.06), 0 20px 50px rgba(70,55,40,0.12);
+
+  --grid-stroke: rgba(40,34,28,0.05);
+  --axis-stroke: rgba(40,34,28,0.20);
+  --circle-stroke: rgba(40,34,28,0.22);
+  --radius-stroke: rgba(40,34,28,0.50);
+  --arc-stroke:  rgba(40,34,28,0.30);
+  --canvas-grain: rgba(40,34,28,0.018);
+  --point-fill:  #FFFFFF;
+  --point-ring:  rgba(40,34,28,0.40);
+  --label-ink:   rgba(40,34,28,0.55);
 }
+
+[data-theme="dark"] {
+  --bg-base:    #16151A;
+  --bg-base-2:  #1C1A20;
+  --surface:    #232128;
+  --surface-2:  #2A2730;
+  --inset:      #1B1A20;
+
+  --text:       #F0EBE3;
+  --muted:      #A39C92;
+  --faint:      #6F695F;
+
+  --line:       rgba(240,235,227,0.08);
+  --line-2:     rgba(240,235,227,0.14);
+  --line-deco:  rgba(240,235,227,0.22);
+
+  --cos:        #8FC0FF;
+  --sin:        #8BE6BC;
+  --tan:        #FFC089;
+  --cos-soft:   rgba(143,192,255,0.14);
+  --sin-soft:   rgba(139,230,188,0.14);
+  --tan-soft:   rgba(255,192,137,0.14);
+  --point:      #F0EBE3;
+
+  --grad: linear-gradient(110deg,#E89A88 0%,#E0AC95 16%,#DDCB85 33%,#8CA886 52%,#849CB8 70%,#A797BC 86%,#C898AC 100%);
+
+  --accent:     #A28FC2;
+  --accent-ink: #F0EBE3;
+
+  --shadow:     0 1px 2px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(240,235,227,0.04);
+  --shadow-lg:  0 2px 8px rgba(0,0,0,0.4), 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(240,235,227,0.05);
+
+  --grid-stroke: rgba(240,235,227,0.045);
+  --axis-stroke: rgba(240,235,227,0.18);
+  --circle-stroke: rgba(240,235,227,0.20);
+  --radius-stroke: rgba(240,235,227,0.55);
+  --arc-stroke:  rgba(240,235,227,0.32);
+  --canvas-grain: rgba(240,235,227,0.015);
+  --point-fill:  #F5F0E8;
+  --point-ring:  rgba(0,0,0,0.55);
+  --label-ink:   rgba(240,235,227,0.55);
+}
+
+/* ───────────────────────────  BASE  ─────────────────────────── */
+html { -webkit-text-size-adjust: 100%; }
 
 body {
-  background: var(--bg);
+  background: var(--bg-base);
   color: var(--text);
-  font-family: 'DM Mono', monospace;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  line-height: 1.6;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* paper grain */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  mix-blend-mode: var(--grain-blend, multiply);
+}
+[data-theme="dark"] body::before,
+[data-theme="dark"] ~ * { --grain-blend: screen; }
+[data-theme="dark"] body::before { opacity: 0.30; mix-blend-mode: screen; }
+
+/* soft floating gradient orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--grad);
+  transition: opacity 0.3s ease;
+}
+[data-theme="dark"] .orb { opacity: 0.22; }
+.orb.o1 { width: 460px; height: 460px; top: -160px; left: -120px; animation: drift1 26s ease-in-out infinite; }
+.orb.o2 { width: 380px; height: 380px; bottom: -140px; right: -100px; animation: drift2 32s ease-in-out infinite; }
+@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,30px) scale(1.08);} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-35px,-25px) scale(1.1);} }
+
+.shell { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* ───────────────────────────  HEADER  ─────────────────────────── */
+header.site {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 2rem 1rem 3rem;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  max-width: 1180px;
+  margin: 0 auto;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+header.site.scrolled {
+  background: color-mix(in srgb, var(--bg-base) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--line);
 }
 
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-header h1 {
+.brand { display: flex; align-items: center; gap: 0.6rem; }
+.brand .mark { color: var(--text); display: grid; place-items: center; }
+.brand .mark svg { display: block; }
+.brand .name {
   font-family: 'Fraunces', serif;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 300;
-  font-style: italic;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  line-height: 1.1;
-  margin-bottom: 0.35rem;
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
 }
+.brand .name b { font-style: italic; font-weight: 400; }
 
-header p {
-  font-size: 0.68rem;
-  color: var(--muted);
+nav.top-nav { display: flex; align-items: center; gap: 1.6rem; }
+nav.top-nav a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.66rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
 }
+nav.top-nav a:hover { color: var(--text); }
+@media (max-width: 760px){ nav.top-nav .nav-link { display: none; } }
 
+/* theme toggle */
+.toggle {
+  --s: 38px;
+  width: var(--s); height: var(--s);
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.2s, background 0.3s;
+}
+.toggle:hover { transform: rotate(35deg) scale(1.06); border-color: var(--accent); }
+.toggle:active { transform: scale(0.92); }
+.toggle svg { width: 18px; height: 18px; }
+.toggle .moon { display: none; }
+[data-theme="dark"] .toggle .sun { display: none; }
+[data-theme="dark"] .toggle .moon { display: block; }
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ───────────────────────────  HERO / EYEBROW  ─────────────────────────── */
+.hero { padding: 2.4rem 0 1.6rem; position: relative; }
+
+.eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+.eyebrow .bracket { color: var(--faint); }
+.eyebrow .spark { color: var(--accent); }
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  position: relative;
+  display: inline-block;
+}
+.hero h1 em { font-style: italic; font-weight: 400; }
+.hero h1 .grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: italic;
+}
+.hero h1 .twk {
+  position: absolute;
+  top: -0.4em; right: -0.7em;
+  color: var(--accent);
+  width: 0.42em; height: 0.42em;
+}
+.hero p.lede {
+  margin-top: 1.1rem;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+.hero p.lede b { color: var(--text); font-weight: 600; }
+
+.hero-rings {
+  position: absolute;
+  top: -10px; right: -30px;
+  width: 230px; height: 230px;
+  color: var(--line-deco);
+  opacity: 0.6;
+  pointer-events: none;
+  animation: spin 80s linear infinite;
+}
+@media (max-width: 860px){ .hero-rings { display: none; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ───────────────────────────  LAYOUT  ─────────────────────────── */
 .top {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 980px;
+  grid-template-columns: 1fr 340px;
+  gap: 1.4rem;
   align-items: start;
-  margin-bottom: 1.5rem;
+  margin-top: 1.6rem;
+}
+@media (max-width: 880px){ .top { grid-template-columns: 1fr; } }
+
+/* arch-topped card frame */
+.card-frame {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .canvas-wrap {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  padding: 14px;
+  border-radius: 26px 26px 22px 22px;
   overflow: hidden;
 }
-
-canvas { display: block; width: 100%; }
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.canvas-inner {
+  position: relative;
+  border-radius: 18px 18px 14px 14px;
+  overflow: hidden;
+  background: var(--inset);
+  border: 1px solid var(--line);
 }
-
-.angle-block {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1.1rem 1.4rem;
+/* subtle wireframe mesh behind canvas */
+.canvas-inner::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(var(--grid-stroke) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-stroke) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(circle at 50% 46%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 46%, #000 30%, transparent 78%);
+  opacity: 0.55;
+  pointer-events: none;
 }
+canvas { display: block; width: 100%; position: relative; z-index: 1; }
 
-.angle-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.9rem;
-}
-
-.angle-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
+.canvas-caption {
+  position: absolute;
+  left: 26px; bottom: 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--faint);
+  z-index: 2;
+  pointer-events: none;
 }
 
-.angle-value {
-  font-family: 'Fraunces', serif;
-  font-size: 2.2rem;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--text);
-  line-height: 1;
-}
+/* ── side panel ── */
+.panel { display: flex; flex-direction: column; gap: 1.1rem; }
 
-.angle-value span { font-size: 1.1rem; color: var(--muted); }
+.block { padding: 1.25rem 1.4rem; }
 
-input[type=range] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 2px;
-  background: var(--border2);
-  border-radius: 0;
-  outline: none;
-  cursor: pointer;
-  margin-bottom: 0.6rem;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--text);
-  border: 2px solid var(--bg);
-  cursor: pointer;
-  transition: transform 0.1s;
-}
-
-input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-
-.rad-display {
-  font-size: 0.65rem;
-  color: var(--muted);
-  text-align: right;
-}
-
-.quad-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  margin-top: 0.7rem;
-}
-
-.quad-btn {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.06em;
-  padding: 0.4rem 0.5rem;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  border-radius: 2px;
-}
-
-.quad-btn:hover { background: var(--bg2); border-color: var(--border2); color: var(--text); }
-
-.cards { display: flex; flex-direction: column; gap: 5px; }
-
-.card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.75rem 1.1rem;
+.block-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  position: relative;
-  overflow: hidden;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+.block-eyebrow::after {
+  content:''; flex:1; height:1px;
+  background: repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px);
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
+.angle-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; }
+.angle-value {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 2.6rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.angle-value span { font-size: 1.2rem; color: var(--muted); }
+.angle-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-ink);
+  background: var(--accent);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+}
+[data-theme="dark"] .angle-tag { background: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: var(--inset);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  outline: none; cursor: pointer;
+  margin: 0.2rem 0 0.7rem;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(70,55,40,0.18);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+input[type=range]::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(70,55,40,0.18);
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.18); }
+input[type=range]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.rad-display {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.64rem;
+  color: var(--muted);
+  text-align: right;
+  letter-spacing: 0.04em;
 }
 
+.quad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 0.9rem; }
+@media (max-width:880px){ .quad-row { grid-template-columns: repeat(2,1fr); } }
+@media (max-width:520px){ .quad-row { grid-template-columns: 1fr 1fr; } }
+.quad-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 10px;
+  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
+}
+.quad-btn:hover { background: var(--surface); color: var(--text); border-color: var(--accent); transform: translateY(-1px); }
+.quad-btn:active { transform: translateY(0); }
+.quad-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── trig cards ── */
+.cards { display: flex; flex-direction: column; gap: 8px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 0.85rem 1.1rem 0.85rem 1.25rem;
+  display: flex; align-items: center; gap: 0.9rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.card::before { content:''; position:absolute; left:0; top:14%; bottom:14%; width:4px; border-radius:99px; }
 .card.cos::before { background: var(--cos); }
 .card.sin::before { background: var(--sin); }
 .card.tan::before { background: var(--tan); }
+/* hover sparkle */
+.card .sparkle-hover {
+  position:absolute; top:10px; right:12px;
+  width:13px; height:13px;
+  opacity:0; transform: scale(0.6) rotate(-20deg);
+  transition: opacity 0.25s, transform 0.25s;
+}
+.card:hover .sparkle-hover { opacity:0.9; transform: scale(1) rotate(0); }
+.card.cos .sparkle-hover { color: var(--cos); }
+.card.sin .sparkle-hover { color: var(--sin); }
+.card.tan .sparkle-hover { color: var(--tan); }
 
 .card-symbol {
   font-family: 'Fraunces', serif;
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: 300;
-  min-width: 44px;
+  font-style: italic; font-weight: 400;
+  font-size: 1.18rem;
+  min-width: 50px;
 }
-
 .card.cos .card-symbol { color: var(--cos); }
 .card.sin .card-symbol { color: var(--sin); }
 .card.tan .card-symbol { color: var(--tan); }
 
 .card-info { flex: 1; }
-
 .card-def {
-  font-size: 0.6rem;
-  color: var(--muted);
-  letter-spacing: 0.06em;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 0.1rem;
+  color: var(--faint);
+  margin-bottom: 0.12rem;
 }
-
 .card-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 1.05rem;
-  font-weight: 500;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
 .card-bar {
-  width: 52px; height: 4px;
-  background: var(--border);
-  border-radius: 0;
-  overflow: hidden;
-  position: relative;
+  width: 58px; height: 5px;
+  background: var(--inset);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  position: relative; overflow: hidden;
 }
-
-.card-bar-fill {
-  position: absolute;
-  top: 0; height: 100%;
-}
-
+.card-bar-fill { position: absolute; top:0; height:100%; border-radius:99px; transition: left 0.05s linear, width 0.05s linear; }
 .card.cos .card-bar-fill { background: var(--cos); }
 .card.sin .card-bar-fill { background: var(--sin); }
 .card.tan .card-bar-fill { background: var(--tan); }
 
-.identity {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.9rem 1.1rem;
-  font-size: 0.7rem;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.identity .ititle {
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-  opacity: 0.7;
-}
-
+/* ── identity block ── */
+.identity { font-size: 0.74rem; color: var(--muted); }
 .identity .eq {
   font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-size: 0.85rem;
-  color: var(--text);
-  margin-bottom: 0.2rem;
+  font-style: italic; font-size: 0.96rem;
+  color: var(--text); margin-bottom: 0.25rem;
 }
-
 .identity .eq .c { color: var(--cos); }
 .identity .eq .s { color: var(--sin); }
 .identity .eq .t { color: var(--tan); }
-.identity .check { font-size: 0.62rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-
-/* wave graphs */
-.graphs-section {
-  width: 100%;
-  max-width: 980px;
+.identity .check {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem; color: var(--muted);
+  font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
 }
+.identity .divider { height: 1px; background: repeating-linear-gradient(90deg,var(--line-2) 0 5px,transparent 5px 10px); margin: 0.85rem 0; }
 
-.graphs-title {
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.75rem;
-  opacity: 0.7;
+/* ───────────────────────────  WAVE GRAPHS  ─────────────────────────── */
+.graphs-section { margin-top: 2.4rem; }
+.section-head { display: flex; align-items: baseline; gap: 0.9rem; margin-bottom: 1rem; }
+.section-head .num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--faint); text-transform: uppercase;
 }
-
-.graphs {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.graph-row {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.graph-label {
-  position: absolute;
-  top: 8px; left: 12px;
+.section-head h2 {
   font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-size: 0.78rem;
-  font-weight: 300;
-  z-index: 2;
-  pointer-events: none;
+  font-weight: 400; font-style: italic;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  letter-spacing: -0.01em;
 }
+.section-head p {
+  font-size: 0.78rem; color: var(--muted);
+  margin-left: auto; max-width: 30ch; text-align: right;
+}
+@media (max-width:620px){ .section-head p { display:none; } }
 
-.graph-row.g-cos .graph-label { color: var(--cos); }
-.graph-row.g-sin .graph-label { color: var(--sin); }
-.graph-row.g-tan .graph-label { color: var(--tan); }
+.graphs { display: flex; flex-direction: column; gap: 10px; }
+.graph-row {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+  padding: 8px 10px 4px;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.graph-row .gr-label {
+  position: absolute; top: 12px; left: 18px;
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 0.92rem; z-index: 2; pointer-events: none;
+}
+.graph-row .gr-tag {
+  position: absolute; top: 15px; right: 18px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.08em;
+  color: var(--faint); z-index: 2; pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.graph-row.g-cos .gr-label, .graph-row.g-cos .gr-tag b { color: var(--cos); }
+.graph-row.g-sin .gr-label, .graph-row.g-sin .gr-tag b { color: var(--sin); }
+.graph-row.g-tan .gr-label, .graph-row.g-tan .gr-tag b { color: var(--tan); }
+.graph-row .gr-tag b { font-weight: 700; }
 
-@media (max-width: 680px) {
-  .top { grid-template-columns: 1fr; }
-  .quad-row { grid-template-columns: repeat(4,1fr); }
+/* ───────────────────────────  LEARN STRIP  ─────────────────────────── */
+.learn { margin-top: 2.6rem; display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+@media (max-width:760px){ .learn { grid-template-columns: 1fr; } }
+.learn-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px 20px 16px 16px;
+  box-shadow: var(--shadow);
+  padding: 1.4rem;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.learn-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.learn-card .arch {
+  position:absolute; top:14px; right:16px;
+  width:30px; height:38px; color: var(--line-deco); opacity:0.7;
+}
+.learn-card .lc-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--faint);
+  margin-bottom: 0.55rem;
+}
+.learn-card h3 {
+  font-family: 'Fraunces', serif; font-weight: 400; font-style: italic;
+  font-size: 1.15rem; margin-bottom: 0.5rem; letter-spacing: -0.01em;
+}
+.learn-card h3 .k { font-style: normal; }
+.learn-card h3 .c { color: var(--cos); } .learn-card h3 .s { color: var(--sin); } .learn-card h3 .t { color: var(--tan); }
+.learn-card p { font-size: 0.84rem; color: var(--muted); }
+
+/* ───────────────────────────  FOOTER  ─────────────────────────── */
+footer.site {
+  margin-top: 3rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.6rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+}
+footer.site .fp {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.1em;
+  color: var(--faint); text-transform: uppercase;
+}
+footer.site .arch-foot { color: var(--line-deco); }
+
+/* twinkle */
+@keyframes twinkle { 0%,100%{ opacity:0.35; transform:scale(0.85);} 50%{ opacity:1; transform:scale(1.1);} }
+.twinkle { animation: twinkle 3.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>The Unit Circle</h1>
-  <p>sin &nbsp;·&nbsp; cos &nbsp;·&nbsp; tan &nbsp;— visually</p>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
+<!-- ───── HEADER ───── -->
+<header class="site" id="site-header">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.3">
+        <circle cx="13" cy="13" r="9" stroke-dasharray="2.5 3"/>
+        <path d="M13 13 L20 9" stroke-linecap="round" stroke-width="1.6"/>
+        <circle cx="20" cy="9" r="1.6" fill="currentColor" stroke="none"/>
+        <path d="M5 4 l1 1.6 1.6 1 -1.6 1 -1 1.6 -1 -1.6 -1.6 -1 1.6 -1z" fill="currentColor" stroke="none" opacity="0.8"/>
+      </svg>
+    </span>
+    <span class="name">Guidestar <span style="color:var(--faint);font-weight:400;font-size:0.8em;font-style:italic;">tutors</span></span>
+  </div>
+  <nav class="top-nav">
+    <a href="#circle" class="nav-link">[ 01 ] Circle</a>
+    <a href="#waves" class="nav-link">[ 02 ] Waves</a>
+    <a href="#learn" class="nav-link">[ 03 ] Notes</a>
+    <button class="toggle" id="theme-toggle" aria-label="Toggle colour theme" aria-pressed="false">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/>
+      </svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5z"/>
+        <path d="M17.5 4.2l.6 1.3 1.3.6-1.3.6-.6 1.3-.6-1.3-1.3-.6 1.3-.6z" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </nav>
 </header>
 
-<div class="top">
-  <div class="canvas-wrap">
-    <canvas id="circle-canvas"></canvas>
+<div class="shell">
+
+  <!-- ───── HERO ───── -->
+  <section class="hero" id="circle">
+    <svg class="hero-rings" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="0.8" aria-hidden="true">
+      <ellipse cx="100" cy="100" rx="92" ry="58" transform="rotate(20 100 100)"/>
+      <ellipse cx="100" cy="100" rx="92" ry="58" transform="rotate(70 100 100)"/>
+      <ellipse cx="100" cy="100" rx="92" ry="58" transform="rotate(120 100 100)"/>
+      <circle cx="100" cy="100" r="3" fill="currentColor" stroke="none"/>
+    </svg>
+    <span class="eyebrow"><span class="bracket">[</span> Trigonometry <span style="color:var(--faint)">·</span> 01 <span class="bracket">]</span> <span class="spark twinkle">✦</span> Interactive</span>
+    <h1>
+      The <em>Unit</em> <span class="grad-text">Circle</span>
+      <svg class="twk twinkle" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0 l1.6 6.8 6.8 1.6 -6.8 1.6 -1.6 6.8 -1.6 -6.8 -6.8 -1.6 6.8 -1.6z"/></svg>
+    </h1>
+    <p class="lede">Drag the angle and watch <b>sine</b>, <b>cosine</b> and <b>tangent</b> come alive — as coordinates on the circle, and as the waves they trace out over a full turn.</p>
+  </section>
+
+  <!-- ───── TOP: CANVAS + PANEL ───── -->
+  <div class="top">
+    <div class="card-frame canvas-wrap">
+      <div class="canvas-inner">
+        <canvas id="circle-canvas"></canvas>
+        <span class="canvas-caption">// unit circle · r = 1</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="card-frame block">
+        <div class="block-eyebrow">Angle θ</div>
+        <div class="angle-header">
+          <div class="angle-value" id="ang-disp">35<span>°</span></div>
+          <span class="angle-tag" id="quad-tag">Q1</span>
+        </div>
+        <input type="range" id="slider" min="0" max="360" value="35" step="1" aria-label="Angle in degrees">
+        <div class="rad-display" id="rad-disp">0.611 rad</div>
+        <div class="quad-row">
+          <button class="quad-btn" data-angle="0">0° → (1, 0)</button>
+          <button class="quad-btn" data-angle="90">90° → (0, 1)</button>
+          <button class="quad-btn" data-angle="180">180° → (−1, 0)</button>
+          <button class="quad-btn" data-angle="270">270° → (0, −1)</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card cos">
+          <svg class="sparkle-hover" viewBox="0 0 20 20" fill="currentColor"><path d="M10 0 l1.4 6.2 6.2 1.4 -6.2 1.4 -1.4 6.2 -1.4 -6.2 -6.2 -1.4 6.2 -1.4z"/></svg>
+          <div class="card-symbol">cos θ</div>
+          <div class="card-info"><div class="card-def">x-coordinate</div><div class="card-val" id="cv">0.8192</div></div>
+          <div class="card-bar"><div class="card-bar-fill" id="cb"></div></div>
+        </div>
+        <div class="card sin">
+          <svg class="sparkle-hover" viewBox="0 0 20 20" fill="currentColor"><path d="M10 0 l1.4 6.2 6.2 1.4 -6.2 1.4 -1.4 6.2 -1.4 -6.2 -6.2 -1.4 6.2 -1.4z"/></svg>
+          <div class="card-symbol">sin θ</div>
+          <div class="card-info"><div class="card-def">y-coordinate</div><div class="card-val" id="sv">0.5736</div></div>
+          <div class="card-bar"><div class="card-bar-fill" id="sb"></div></div>
+        </div>
+        <div class="card tan">
+          <svg class="sparkle-hover" viewBox="0 0 20 20" fill="currentColor"><path d="M10 0 l1.4 6.2 6.2 1.4 -6.2 1.4 -1.4 6.2 -1.4 -6.2 -6.2 -1.4 6.2 -1.4z"/></svg>
+          <div class="card-symbol">tan θ</div>
+          <div class="card-info"><div class="card-def">sin ÷ cos</div><div class="card-val" id="tv">0.7002</div></div>
+          <div class="card-bar"><div class="card-bar-fill" id="tb"></div></div>
+        </div>
+      </div>
+
+      <div class="card-frame block identity">
+        <div class="block-eyebrow">Pythagorean identity</div>
+        <div class="eq"><span class="c">cos²θ</span> + <span class="s">sin²θ</span> = 1</div>
+        <div class="check" id="pycheck">0.671 + 0.329 = 1.000 ✓</div>
+        <div class="divider"></div>
+        <div class="eq"><span class="t">tan θ</span> = <span class="s">sin θ</span> / <span class="c">cos θ</span></div>
+        <div class="check" id="tancheck">0.7002 = 0.5736 / 0.8192</div>
+      </div>
+    </div>
   </div>
 
-  <div class="panel">
-    <div class="angle-block">
-      <div class="angle-header">
-        <span class="angle-label">Angle θ</span>
-        <div class="angle-value" id="ang-disp">35<span>°</span></div>
+  <!-- ───── WAVE GRAPHS ───── -->
+  <section class="graphs-section" id="waves">
+    <div class="section-head">
+      <span class="num">// 02</span>
+      <h2>Unrolled into waves</h2>
+      <p>The marker tracks your angle as you drag the circle above.</p>
+    </div>
+    <div class="graphs">
+      <div class="graph-row g-cos">
+        <div class="gr-label">cos θ</div>
+        <div class="gr-tag">= <b id="gt-cos">0.819</b></div>
+        <canvas id="g-cos"></canvas>
       </div>
-      <input type="range" id="slider" min="0" max="360" value="35" step="1">
-      <div class="rad-display" id="rad-disp">0.611 rad · Q1</div>
-      <div class="quad-row">
-        <button class="quad-btn" onclick="setAngle(0)">0° → (1, 0)</button>
-        <button class="quad-btn" onclick="setAngle(90)">90° → (0, 1)</button>
-        <button class="quad-btn" onclick="setAngle(180)">180° → (−1, 0)</button>
-        <button class="quad-btn" onclick="setAngle(270)">270° → (0,−1)</button>
+      <div class="graph-row g-sin">
+        <div class="gr-label">sin θ</div>
+        <div class="gr-tag">= <b id="gt-sin">0.574</b></div>
+        <canvas id="g-sin"></canvas>
+      </div>
+      <div class="graph-row g-tan">
+        <div class="gr-label">tan θ</div>
+        <div class="gr-tag">= <b id="gt-tan">0.700</b></div>
+        <canvas id="g-tan"></canvas>
       </div>
     </div>
+  </section>
 
-    <div class="cards">
-      <div class="card cos">
-        <div class="card-symbol">cos θ</div>
-        <div class="card-info">
-          <div class="card-def">x-coordinate</div>
-          <div class="card-val" id="cv">0.8192</div>
-        </div>
-        <div class="card-bar"><div class="card-bar-fill" id="cb"></div></div>
-      </div>
-      <div class="card sin">
-        <div class="card-symbol">sin θ</div>
-        <div class="card-info">
-          <div class="card-def">y-coordinate</div>
-          <div class="card-val" id="sv">0.5736</div>
-        </div>
-        <div class="card-bar"><div class="card-bar-fill" id="sb"></div></div>
-      </div>
-      <div class="card tan">
-        <div class="card-symbol">tan θ</div>
-        <div class="card-info">
-          <div class="card-def">sin ÷ cos</div>
-          <div class="card-val" id="tv">0.7002</div>
-        </div>
-        <div class="card-bar"><div class="card-bar-fill" id="tb"></div></div>
-      </div>
+  <!-- ───── LEARN ───── -->
+  <section class="learn" id="learn">
+    <div class="learn-card">
+      <svg class="arch" viewBox="0 0 30 38" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 37 V15 a12 12 0 0 1 24 0 V37"/></svg>
+      <div class="lc-eyebrow">[ cos ] · the run</div>
+      <h3><span class="c k">Cosine</span> is the x</h3>
+      <p>Where the point sits left-to-right. It starts at 1, dips to −1 at 180°, and returns — a smooth wave that leads sine by a quarter turn.</p>
     </div>
+    <div class="learn-card">
+      <svg class="arch" viewBox="0 0 30 38" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 37 V15 a12 12 0 0 1 24 0 V37"/></svg>
+      <div class="lc-eyebrow">[ sin ] · the rise</div>
+      <h3><span class="s k">Sine</span> is the y</h3>
+      <p>Height above or below the axis. Zero at 0°, peaks at 90°, and the very same wave as cosine — just shifted along by 90°.</p>
+    </div>
+    <div class="learn-card">
+      <svg class="arch" viewBox="0 0 30 38" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 37 V15 a12 12 0 0 1 24 0 V37"/></svg>
+      <div class="lc-eyebrow">[ tan ] · the slope</div>
+      <h3><span class="t k">Tangent</span> is sin ÷ cos</h3>
+      <p>The slope of the radius. When cosine hits zero at 90° and 270° it shoots to infinity — those gaps are the dashed asymptotes.</p>
+    </div>
+  </section>
 
-    <div class="identity">
-      <div class="ititle">Pythagorean identity</div>
-      <div class="eq"><span class="c">cos²θ</span> + <span class="s">sin²θ</span> = 1</div>
-      <div class="check" id="pycheck">0.671 + 0.329 = 1.000 ✓</div>
-      <div style="height:0.5rem"></div>
-      <div class="eq"><span class="t">tan θ</span> = <span class="s">sin θ</span> / <span class="c">cos θ</span></div>
-      <div class="check" id="tancheck">0.7002 = 0.5736 / 0.8192</div>
-    </div>
-  </div>
-</div>
+  <!-- ───── FOOTER ───── -->
+  <footer class="site">
+    <span class="fp">✦ Guidestar Tutors — made for curious learners</span>
+    <svg class="arch-foot" width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M2 19 V11 a18 8 0 0 1 36 0 V19"/></svg>
+    <span class="fp">// θ ∈ [0°, 360°]</span>
+  </footer>
 
-<div class="graphs-section">
-  <div class="graphs-title">Wave graphs — the marker tracks your angle as you drag</div>
-  <div class="graphs">
-    <div class="graph-row g-cos">
-      <div class="graph-label">cos θ</div>
-      <canvas id="g-cos"></canvas>
-    </div>
-    <div class="graph-row g-sin">
-      <div class="graph-label">sin θ</div>
-      <canvas id="g-sin"></canvas>
-    </div>
-    <div class="graph-row g-tan">
-      <div class="graph-label">tan θ</div>
-      <canvas id="g-tan"></canvas>
-    </div>
-  </div>
 </div>
 
 <script>
+/* ─────────────────────────  THEME  ───────────────────────── */
+(function(){
+  const root = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
+  let stored = null;
+  try { stored = localStorage.getItem('uc-theme'); } catch(e){}
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = stored || (prefersDark ? 'dark' : 'light');
+  applyTheme(initial);
+
+  function applyTheme(t){
+    root.setAttribute('data-theme', t);
+    toggle.setAttribute('aria-pressed', t === 'dark');
+    // canvases read CSS vars, so repaint after the switch
+    if (window.__ucRepaint) requestAnimationFrame(window.__ucRepaint);
+  }
+  toggle.addEventListener('click', ()=>{
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('uc-theme', next); } catch(e){}
+  });
+})();
+
+/* ─────────────────────────  HEADER SCROLL  ───────────────────────── */
+(function(){
+  const h = document.getElementById('site-header');
+  const onScroll = ()=> h.classList.toggle('scrolled', window.scrollY > 12);
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+/* ─────────────────────────  COLOUR HELPERS  ───────────────────────── */
+const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+function C(){ // pull live theme colours each repaint
+  return {
+    grid:   cssVar('--grid-stroke'),
+    axis:   cssVar('--axis-stroke'),
+    circle: cssVar('--circle-stroke'),
+    radius: cssVar('--radius-stroke'),
+    arc:    cssVar('--arc-stroke'),
+    cos:    cssVar('--cos'),
+    sin:    cssVar('--sin'),
+    tan:    cssVar('--tan'),
+    label:  cssVar('--label-ink'),
+    pointFill: cssVar('--point-fill'),
+    pointRing: cssVar('--point-ring'),
+    faint:  cssVar('--label-ink')
+  };
+}
+// rgba string from a hex + alpha
+function rgba(hex, a){
+  hex = hex.replace('#','');
+  if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+  const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
 const dpr = window.devicePixelRatio || 1;
 const slider = document.getElementById('slider');
 
-// ── circle ──
+/* ─────────────────────────  CIRCLE  ───────────────────────── */
 const cc = document.getElementById('circle-canvas');
 const ctx = cc.getContext('2d');
 let SZ=0, CX=0, CY=0, R=0;
 
-function resizeCircle() {
+function resizeCircle(){
   const w = cc.parentElement.clientWidth;
   cc.width = w*dpr; cc.height = w*dpr;
   cc.style.height = w + 'px';
-  SZ=w*dpr; CX=SZ/2; CY=SZ/2; R=SZ*0.355;
+  SZ=w*dpr; CX=SZ/2; CY=SZ/2; R=SZ*0.345;
 }
+function tc(x,y){ return [CX+x*R, CY-y*R]; }
+const MONO = "'Space Mono', monospace";
 
-function tc(x,y) { return [CX+x*R, CY-y*R]; }
-
-function drawCircle(deg) {
+function drawCircle(deg){
+  const col = C();
   ctx.clearRect(0,0,SZ,SZ);
   const rad = deg*Math.PI/180;
   const cosV=Math.cos(rad), sinV=Math.sin(rad), tanV=Math.tan(rad);
 
-  // grid
-  ctx.strokeStyle='rgba(255,255,255,0.04)'; ctx.lineWidth=dpr;
-  for(let i=-2;i<=2;i++){
-    const [gx]=tc(i,0); const [,gy]=tc(0,i);
-    ctx.beginPath(); ctx.moveTo(gx,CY-R*1.42); ctx.lineTo(gx,CY+R*1.42); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(CX-R*1.42,gy); ctx.lineTo(CX+R*1.42,gy); ctx.stroke();
-  }
-
   // axes
-  ctx.strokeStyle='rgba(255,255,255,0.13)'; ctx.lineWidth=1.5*dpr;
-  ctx.beginPath(); ctx.moveTo(CX-R*1.4,CY); ctx.lineTo(CX+R*1.4,CY); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX,CY-R*1.4); ctx.lineTo(CX,CY+R*1.4); ctx.stroke();
+  ctx.strokeStyle=col.axis; ctx.lineWidth=1.4*dpr;
+  ctx.beginPath(); ctx.moveTo(CX-R*1.42,CY); ctx.lineTo(CX+R*1.42,CY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CX,CY-R*1.42); ctx.lineTo(CX,CY+R*1.42); ctx.stroke();
 
-  // axis labels
-  ctx.fillStyle='rgba(255,255,255,0.2)';
-  ctx.font=`${13*dpr}px 'DM Mono',monospace`;
-  ctx.textAlign='center';
-  ctx.fillText('x', CX+R*1.35, CY+20*dpr);
-  ctx.fillText('y', CX+13*dpr, CY-R*1.33);
+  // axis letters
+  ctx.fillStyle=col.label;
+  ctx.font=`${12*dpr}px ${MONO}`; ctx.textAlign='center';
+  ctx.fillText('x', CX+R*1.36, CY+18*dpr);
+  ctx.fillText('y', CX+13*dpr, CY-R*1.34);
 
-  // ticks
-  ctx.font=`${9*dpr}px 'DM Mono',monospace`;
+  // ticks ±1
   for(const v of [-1,1]){
     const [tx]=tc(v,0); const [,ty]=tc(0,v);
-    ctx.fillStyle='rgba(255,255,255,0.13)';
+    ctx.fillStyle=col.axis;
     ctx.fillRect(tx-dpr,CY-4*dpr,2*dpr,8*dpr);
     ctx.fillRect(CX-4*dpr,ty-dpr,8*dpr,2*dpr);
-    ctx.fillStyle='rgba(255,255,255,0.22)';
-    ctx.textAlign='center';
-    ctx.fillText(v,tx,CY+14*dpr);
-    ctx.fillText(v,CX-14*dpr,ty+3*dpr);
+    ctx.fillStyle=col.label; ctx.font=`${9*dpr}px ${MONO}`; ctx.textAlign='center';
+    ctx.fillText(v,tx,CY+15*dpr);
+    ctx.fillText(v,CX-15*dpr,ty+3*dpr);
   }
 
-  // angle starts from positive x-axis — highlight (1,0)
+  // 0°/360° reference notch
   const [refX,refY]=tc(1,0);
-  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=2*dpr;
-  ctx.beginPath(); ctx.moveTo(refX,refY-7*dpr); ctx.lineTo(refX,refY+7*dpr); ctx.stroke();
-  ctx.fillStyle='rgba(255,255,255,0.3)';
-  ctx.font=`${8.5*dpr}px 'DM Mono',monospace`;
-  ctx.textAlign='center';
-  ctx.fillText('0°/360°', refX, refY+22*dpr);
+  ctx.strokeStyle=col.radius; ctx.lineWidth=2*dpr;
+  ctx.beginPath(); ctx.moveTo(refX,refY-6*dpr); ctx.lineTo(refX,refY+6*dpr); ctx.stroke();
 
-  // unit circle
+  // unit circle (dashed)
   ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,255,255,0.16)'; ctx.lineWidth=1.5*dpr;
+  ctx.strokeStyle=col.circle; ctx.lineWidth=1.5*dpr;
   ctx.setLineDash([4*dpr,5*dpr]); ctx.stroke(); ctx.setLineDash([]);
 
   const [px,py]=tc(cosV,sinV);
@@ -481,206 +909,187 @@ function drawCircle(deg) {
   if(Math.abs(tanV)<2.4){
     const [t1x,t1y]=tc(1,0); const [t2x,t2y]=tc(1,tanV);
     ctx.beginPath(); ctx.moveTo(t1x,t1y); ctx.lineTo(t2x,t2y);
-    ctx.strokeStyle='#ffb86c'; ctx.lineWidth=2.5*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
+    ctx.strokeStyle=col.tan; ctx.lineWidth=2.6*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
     ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(t2x,t2y);
-    ctx.strokeStyle='rgba(255,184,108,0.22)'; ctx.lineWidth=1.2*dpr;
+    ctx.strokeStyle=rgba(col.tan,0.22); ctx.lineWidth=1.2*dpr;
     ctx.setLineDash([4*dpr,4*dpr]); ctx.stroke(); ctx.setLineDash([]);
-    ctx.beginPath(); ctx.arc(t2x,t2y,4*dpr,0,Math.PI*2);
-    ctx.fillStyle='#ffb86c'; ctx.fill();
-    ctx.fillStyle='#ffb86c'; ctx.font=`${10*dpr}px 'DM Mono',monospace`; ctx.textAlign='left';
-    ctx.fillText('tan θ', t2x+7*dpr, tanV>=0 ? t2y-10*dpr : t2y+16*dpr);
+    ctx.beginPath(); ctx.arc(t2x,t2y,4*dpr,0,Math.PI*2); ctx.fillStyle=col.tan; ctx.fill();
+    ctx.fillStyle=col.tan; ctx.font=`${10*dpr}px ${MONO}`; ctx.textAlign='left';
+    ctx.fillText('tan', t2x+7*dpr, tanV>=0 ? t2y-9*dpr : t2y+15*dpr);
   }
 
-  // cos line
+  // cos line (along x)
   ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(px,CY);
-  ctx.strokeStyle='#6eb5ff'; ctx.lineWidth=2.5*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
+  ctx.strokeStyle=col.cos; ctx.lineWidth=2.6*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
   ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px,CY);
-  ctx.strokeStyle='rgba(110,181,255,0.28)'; ctx.lineWidth=dpr;
+  ctx.strokeStyle=rgba(col.cos,0.30); ctx.lineWidth=dpr;
   ctx.setLineDash([3*dpr,3*dpr]); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle='#6eb5ff'; ctx.font=`${10*dpr}px 'DM Mono',monospace`; ctx.textAlign='center';
-  ctx.fillText('cos θ', CX+(px-CX)/2, sinV>=0 ? CY+16*dpr : CY-8*dpr);
+  ctx.fillStyle=col.cos; ctx.font=`${10*dpr}px ${MONO}`; ctx.textAlign='center';
+  ctx.fillText('cos', CX+(px-CX)/2, sinV>=0 ? CY+15*dpr : CY-7*dpr);
 
-  // sin line
+  // sin line (along y)
   ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(CX,py);
-  ctx.strokeStyle='#6dffc4'; ctx.lineWidth=2.5*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
+  ctx.strokeStyle=col.sin; ctx.lineWidth=2.6*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
   ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(CX,py);
-  ctx.strokeStyle='rgba(109,255,196,0.28)'; ctx.lineWidth=dpr;
+  ctx.strokeStyle=rgba(col.sin,0.30); ctx.lineWidth=dpr;
   ctx.setLineDash([3*dpr,3*dpr]); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle='#6dffc4'; ctx.font=`${10*dpr}px 'DM Mono',monospace`;
+  ctx.fillStyle=col.sin; ctx.font=`${10*dpr}px ${MONO}`;
   ctx.textAlign = cosV>=0 ? 'right' : 'left';
-  ctx.fillText('sin θ', cosV>=0 ? CX-8*dpr : CX+8*dpr, CY+(py-CY)/2);
+  ctx.fillText('sin', cosV>=0 ? CX-8*dpr : CX+8*dpr, CY+(py-CY)/2);
 
   // radius
   ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(px,py);
-  ctx.strokeStyle='rgba(255,255,255,0.42)'; ctx.lineWidth=2*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
+  ctx.strokeStyle=col.radius; ctx.lineWidth=2*dpr; ctx.lineCap='round'; ctx.stroke(); ctx.lineCap='butt';
 
-  // angle arc from 0 (east) CCW to current angle
-  const arcR=R*0.19;
-  ctx.beginPath();
-  ctx.arc(CX, CY, arcR, 0, -rad, rad>0);
-  ctx.strokeStyle='rgba(255,255,255,0.28)'; ctx.lineWidth=1.5*dpr; ctx.stroke();
+  // angle arc
+  const arcR=R*0.18;
+  ctx.beginPath(); ctx.arc(CX,CY,arcR,0,-rad,rad>0);
+  ctx.strokeStyle=col.arc; ctx.lineWidth=1.5*dpr; ctx.stroke();
+  const midA=rad/2, lR=arcR+13*dpr;
+  ctx.fillStyle=col.label; ctx.font=`${9*dpr}px ${MONO}`; ctx.textAlign='center';
+  ctx.fillText(`${deg}°`, CX+lR*Math.cos(-midA), CY+lR*Math.sin(-midA)+3*dpr);
 
-  // angle label
-  const midA=rad/2; const lR=arcR+13*dpr;
-  ctx.fillStyle='rgba(255,255,255,0.48)';
-  ctx.font=`${9*dpr}px 'DM Mono',monospace`; ctx.textAlign='center';
-  ctx.fillText(`${deg}°`, CX+lR*Math.cos(-midA), CY+lR*Math.sin(-midA));
+  // projection dots
+  ctx.beginPath(); ctx.arc(px,CY,4*dpr,0,Math.PI*2); ctx.fillStyle=col.cos; ctx.fill();
+  ctx.beginPath(); ctx.arc(CX,py,4*dpr,0,Math.PI*2); ctx.fillStyle=col.sin; ctx.fill();
 
-  // axis projection dots
-  ctx.beginPath(); ctx.arc(px,CY,4*dpr,0,Math.PI*2); ctx.fillStyle='#6eb5ff'; ctx.fill();
-  ctx.beginPath(); ctx.arc(CX,py,4*dpr,0,Math.PI*2); ctx.fillStyle='#6dffc4'; ctx.fill();
-
-  // right-angle marker at point
+  // right-angle marker
   if(Math.abs(cosV)>0.06 && Math.abs(sinV)>0.06){
     const sqS=9*dpr;
-    const sx=cosV>0?-sqS:sqS; const sy=sinV>0?sqS:-sqS;
-    ctx.strokeStyle='rgba(255,255,255,0.22)'; ctx.lineWidth=dpr;
+    const sx=cosV>0?-sqS:sqS, sy=sinV>0?sqS:-sqS;
+    ctx.strokeStyle=col.axis; ctx.lineWidth=dpr;
     ctx.beginPath(); ctx.moveTo(px+sx,py); ctx.lineTo(px+sx,py+sy); ctx.lineTo(px,py+sy); ctx.stroke();
   }
 
   // glow + point
-  const grd=ctx.createRadialGradient(px,py,0,px,py,13*dpr);
-  grd.addColorStop(0,'rgba(245,240,232,0.28)'); grd.addColorStop(1,'transparent');
-  ctx.beginPath(); ctx.arc(px,py,13*dpr,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
-  ctx.beginPath(); ctx.arc(px,py,6*dpr,0,Math.PI*2);
-  ctx.fillStyle='#f5f0e8'; ctx.fill();
-  ctx.strokeStyle='rgba(0,0,0,0.55)'; ctx.lineWidth=2*dpr; ctx.stroke();
+  const grd=ctx.createRadialGradient(px,py,0,px,py,14*dpr);
+  grd.addColorStop(0, rgba(col.cos,0.0)); // neutral base
+  ctx.beginPath(); ctx.arc(px,py,7*dpr,0,Math.PI*2);
+  ctx.fillStyle=col.pointFill; ctx.fill();
+  ctx.strokeStyle=col.pointRing; ctx.lineWidth=2*dpr; ctx.stroke();
 
-  // coordinate label
-  ctx.fillStyle='rgba(255,255,255,0.48)';
-  ctx.font=`${8.5*dpr}px 'DM Mono',monospace`;
+  // coord label
+  ctx.fillStyle=col.label; ctx.font=`${8.5*dpr}px ${MONO}`;
   ctx.textAlign=cosV>=0?'left':'right';
-  ctx.fillText(`(${cosV.toFixed(2)}, ${sinV.toFixed(2)})`, px+(cosV>=0?11*dpr:-11*dpr), py+(sinV>=0?-14*dpr:14*dpr));
+  ctx.fillText(`(${cosV.toFixed(2)}, ${sinV.toFixed(2)})`,
+    px+(cosV>=0?11*dpr:-11*dpr), py+(sinV>=0?-13*dpr:15*dpr));
 }
 
-// ── wave graphs ──
-const GRAPH_H = 90;
+/* ─────────────────────────  WAVE GRAPHS  ───────────────────────── */
+const GRAPH_H = 96;
 const graphDefs = [
-  { id:'g-cos', color:'#6eb5ff', fn:Math.cos, yMin:-1.15, yMax:1.15 },
-  { id:'g-sin', color:'#6dffc4', fn:Math.sin, yMin:-1.15, yMax:1.15 },
-  { id:'g-tan', color:'#ffb86c', fn:Math.tan, yMin:-3.3,  yMax:3.3  }
+  { id:'g-cos', varName:'--cos', fn:Math.cos, yMin:-1.18, yMax:1.18 },
+  { id:'g-sin', varName:'--sin', fn:Math.sin, yMin:-1.18, yMax:1.18 },
+  { id:'g-tan', varName:'--tan', fn:Math.tan, yMin:-3.4,  yMax:3.4  }
 ];
-
-const graphCtxs = graphDefs.map(g => {
-  const el = document.getElementById(g.id);
-  return { ...g, el, gctx: el.getContext('2d'), W:0, H:0 };
+const graphCtxs = graphDefs.map(g=>{
+  const el=document.getElementById(g.id);
+  return {...g, el, gctx: el.getContext('2d'), W:0, H:0};
 });
-
-function resizeGraphs() {
+function resizeGraphs(){
   for(const g of graphCtxs){
-    const w = g.el.parentElement.clientWidth;
-    g.el.width = w*dpr; g.el.height = GRAPH_H*dpr;
-    g.el.style.height = GRAPH_H+'px';
-    g.W = w*dpr; g.H = GRAPH_H*dpr;
+    const w=g.el.parentElement.clientWidth - 20; // padding
+    g.el.width=w*dpr; g.el.height=GRAPH_H*dpr;
+    g.el.style.height=GRAPH_H+'px'; g.el.style.width=w+'px';
+    g.W=w*dpr; g.H=GRAPH_H*dpr;
   }
 }
-
-function drawGraph(g, deg) {
-  const {gctx,color,fn,yMin,yMax,W,H} = g;
+function drawGraph(g, deg){
+  const col=C();
+  const color=cssVar(g.varName);
+  const {gctx,fn,yMin,yMax,W,H}=g;
   gctx.clearRect(0,0,W,H);
-  const yRange = yMax-yMin;
-  const toGY = v => H - ((Math.max(yMin,Math.min(yMax,v))-yMin)/yRange)*H;
-  const toGX = d => (d/360)*W;
-  const isTan = yMax > 2;
+  const yRange=yMax-yMin;
+  const toGY=v=>H-((Math.max(yMin,Math.min(yMax,v))-yMin)/yRange)*H;
+  const toGX=d=>(d/360)*W;
+  const isTan=yMax>2;
 
   // zero line
-  gctx.strokeStyle='rgba(255,255,255,0.09)'; gctx.lineWidth=dpr;
-  const zy=toGY(0);
-  gctx.beginPath(); gctx.moveTo(0,zy); gctx.lineTo(W,zy); gctx.stroke();
+  gctx.strokeStyle=col.axis; gctx.lineWidth=dpr;
+  const zy=toGY(0); gctx.beginPath(); gctx.moveTo(0,zy); gctx.lineTo(W,zy); gctx.stroke();
 
-  // ±1 lines
+  // ±1 guides
   if(!isTan){
-    gctx.strokeStyle='rgba(255,255,255,0.05)';
-    [1,-1].forEach(v=>{ const y=toGY(v); gctx.beginPath(); gctx.moveTo(0,y); gctx.lineTo(W,y); gctx.stroke(); });
+    gctx.strokeStyle=col.grid;
+    [1,-1].forEach(v=>{const y=toGY(v);gctx.beginPath();gctx.moveTo(0,y);gctx.lineTo(W,y);gctx.stroke();});
   }
+  // vertical guides
+  gctx.strokeStyle=col.grid;
+  [90,180,270].forEach(d=>{const x=toGX(d);gctx.beginPath();gctx.moveTo(x,0);gctx.lineTo(x,H);gctx.stroke();});
 
-  // 90° vertical guides
-  gctx.strokeStyle='rgba(255,255,255,0.05)';
-  [90,180,270].forEach(d=>{ const x=toGX(d); gctx.beginPath(); gctx.moveTo(x,0); gctx.lineTo(x,H); gctx.stroke(); });
-
-  // x-axis degree labels
-  gctx.fillStyle='rgba(255,255,255,0.18)';
-  gctx.font=`${8*dpr}px 'DM Mono',monospace`;
-  gctx.textAlign='center';
-  [0,90,180,270,360].forEach(d => gctx.fillText(d+'°', toGX(d===360?358:d), H-3*dpr));
-
-  // y-axis labels for ±1 on sin/cos
+  // x labels
+  gctx.fillStyle=col.label; gctx.font=`${8*dpr}px ${MONO}`; gctx.textAlign='center';
+  [0,90,180,270,360].forEach(d=>gctx.fillText(d+'°', toGX(d===360?356:d===0?6:d), H-3*dpr));
   if(!isTan){
-    gctx.fillStyle='rgba(255,255,255,0.18)';
-    gctx.font=`${8*dpr}px 'DM Mono',monospace`;
     gctx.textAlign='left';
-    gctx.fillText('1',  4*dpr, toGY(1)+3*dpr);
-    gctx.fillText('-1', 4*dpr, toGY(-1)+3*dpr);
+    gctx.fillText('1', 4*dpr, toGY(1)+9*dpr);
+    gctx.fillText('-1',4*dpr, toGY(-1)-4*dpr);
   }
 
-  // wave — for tan, split into three segments: [0°,90°), (90°,270°), (270°,360°]
-  gctx.strokeStyle=color; gctx.lineWidth=1.8*dpr;
-
+  // wave
+  gctx.strokeStyle=color; gctx.lineWidth=2*dpr; gctx.lineJoin='round';
   if(isTan){
-    // asymptotes at 90° and 270° — draw three separate continuous segments
-    const segments = [[0, 89.9], [90.1, 269.9], [270.1, 360]];
-    for(const [dStart, dEnd] of segments){
-      gctx.beginPath();
-      let first=true;
-      const steps = Math.ceil((dEnd-dStart)/360*W);
-      for(let i=0; i<=steps; i++){
-        const d = dStart + (dEnd-dStart)*(i/steps);
-        const v = fn(d*Math.PI/180);
-        // skip if out of visible range (near asymptote)
-        if(v < yMin || v > yMax){ first=true; continue; }
-        const gx = toGX(d);
-        const gy = toGY(v);
-        if(first){ gctx.moveTo(gx,gy); first=false; } else gctx.lineTo(gx,gy);
+    const segments=[[0,89.7],[90.3,269.7],[270.3,360]];
+    for(const [dStart,dEnd] of segments){
+      gctx.beginPath(); let first=true;
+      const steps=Math.ceil((dEnd-dStart)/360*W);
+      for(let i=0;i<=steps;i++){
+        const d=dStart+(dEnd-dStart)*(i/steps);
+        const v=fn(d*Math.PI/180);
+        if(v<yMin||v>yMax){first=true;continue;}
+        const gx=toGX(d), gy=toGY(v);
+        if(first){gctx.moveTo(gx,gy);first=false;} else gctx.lineTo(gx,gy);
       }
       gctx.stroke();
     }
-    // draw dashed asymptote lines at 90° and 270°
-    gctx.strokeStyle='rgba(255,184,108,0.2)'; gctx.lineWidth=dpr;
-    gctx.setLineDash([3*dpr,3*dpr]);
-    [90,270].forEach(d=>{ const x=toGX(d); gctx.beginPath(); gctx.moveTo(x,0); gctx.lineTo(x,H); gctx.stroke(); });
+    gctx.strokeStyle=rgba(color,0.22); gctx.lineWidth=dpr; gctx.setLineDash([3*dpr,3*dpr]);
+    [90,270].forEach(d=>{const x=toGX(d);gctx.beginPath();gctx.moveTo(x,0);gctx.lineTo(x,H);gctx.stroke();});
     gctx.setLineDash([]);
   } else {
-    gctx.beginPath();
-    let first=true;
-    for(let px=0; px<=W; px++){
-      const d=(px/W)*360;
-      const v=fn(d*Math.PI/180);
-      const gy=toGY(v);
-      if(first){ gctx.moveTo(px,gy); first=false; } else gctx.lineTo(px,gy);
+    gctx.beginPath(); let first=true;
+    for(let px=0;px<=W;px++){
+      const d=(px/W)*360, v=fn(d*Math.PI/180), gy=toGY(v);
+      if(first){gctx.moveTo(px,gy);first=false;} else gctx.lineTo(px,gy);
     }
     gctx.stroke();
   }
 
-  // current angle vertical marker
+  // current marker
   const cx=toGX(deg);
-  gctx.strokeStyle='rgba(255,255,255,0.32)'; gctx.lineWidth=1.2*dpr;
-  gctx.setLineDash([3*dpr,3*dpr]);
-  gctx.beginPath(); gctx.moveTo(cx,0); gctx.lineTo(cx,H); gctx.stroke();
-  gctx.setLineDash([]);
+  gctx.strokeStyle=col.radius; gctx.lineWidth=1.2*dpr; gctx.setLineDash([3*dpr,3*dpr]);
+  gctx.beginPath(); gctx.moveTo(cx,0); gctx.lineTo(cx,H); gctx.stroke(); gctx.setLineDash([]);
 
-  // dot at current value
   const curV=fn(deg*Math.PI/180);
   if(Math.abs(curV)<=Math.abs(yMax)*1.05){
     const dotY=toGY(curV);
-    gctx.beginPath(); gctx.arc(cx,dotY,7*dpr,0,Math.PI*2);
-    gctx.fillStyle=color+'33'; gctx.fill();
-    gctx.beginPath(); gctx.arc(cx,dotY,4*dpr,0,Math.PI*2);
-    gctx.fillStyle=color; gctx.fill();
-    gctx.strokeStyle='rgba(0,0,0,0.6)'; gctx.lineWidth=1.5*dpr; gctx.stroke();
+    gctx.beginPath(); gctx.arc(cx,dotY,7*dpr,0,Math.PI*2); gctx.fillStyle=rgba(color,0.22); gctx.fill();
+    gctx.beginPath(); gctx.arc(cx,dotY,4*dpr,0,Math.PI*2); gctx.fillStyle=color; gctx.fill();
+    gctx.strokeStyle=col.pointRing; gctx.lineWidth=1.4*dpr; gctx.stroke();
   }
 }
 
-// ── UI ──
-function updateUI(deg) {
+/* ─────────────────────────  UI / STATE  ───────────────────────── */
+function updateUI(deg){
   const rad=deg*Math.PI/180;
   const c=Math.cos(rad), s=Math.sin(rad), t=Math.tan(rad);
-  const q=deg<90?'Q1':deg<180?'Q2':deg<270?'Q3':'Q4';
+  // axis angles aren't interior to a quadrant — label them honestly
+  let q;
+  if(deg%90===0)      q = (deg%180===0) ? 'x-axis' : 'y-axis';
+  else if(deg<90)     q = 'Q1';
+  else if(deg<180)    q = 'Q2';
+  else if(deg<270)    q = 'Q3';
+  else                q = 'Q4';
 
   document.getElementById('ang-disp').innerHTML=`${deg}<span>°</span>`;
-  document.getElementById('rad-disp').textContent=`${rad.toFixed(3)} rad · ${q}`;
+  document.getElementById('quad-tag').textContent=q;
+  document.getElementById('rad-disp').textContent=`${rad.toFixed(3)} rad`;
   document.getElementById('cv').textContent=c.toFixed(4);
   document.getElementById('sv').textContent=s.toFixed(4);
   document.getElementById('tv').textContent=Math.abs(t)>99?'±∞':t.toFixed(4);
+
+  document.getElementById('gt-cos').textContent=c.toFixed(3);
+  document.getElementById('gt-sin').textContent=s.toFixed(3);
+  document.getElementById('gt-tan').textContent=Math.abs(t)>99?'±∞':t.toFixed(3);
 
   function bar(id,val,cap=1){
     const el=document.getElementById(id);
@@ -696,16 +1105,27 @@ function updateUI(deg) {
     Math.abs(t)<99 ? `${t.toFixed(4)} = ${s.toFixed(4)} / ${c.toFixed(4)}` : 'undefined here';
 }
 
-function update(deg) {
+let currentDeg = 35;
+function update(deg){
+  currentDeg = deg;
   drawCircle(deg);
   updateUI(deg);
-  for(const g of graphCtxs) drawGraph(g,deg);
+  for(const g of graphCtxs) drawGraph(g, deg);
 }
+// expose for theme repaint
+window.__ucRepaint = ()=> update(currentDeg);
 
 function setAngle(deg){ slider.value=deg; update(deg); }
+document.querySelectorAll('.quad-btn').forEach(b=>{
+  b.addEventListener('click', ()=> setAngle(parseInt(b.dataset.angle)));
+});
+slider.addEventListener('input', ()=> update(parseInt(slider.value)));
+window.addEventListener('resize', ()=>{ resizeCircle(); resizeGraphs(); update(currentDeg); });
 
-slider.addEventListener('input', () => update(parseInt(slider.value)));
-window.addEventListener('resize', () => { resizeCircle(); resizeGraphs(); update(parseInt(slider.value)); });
+// fonts may shift metrics — repaint once loaded
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=> update(currentDeg));
+}
 
 resizeCircle(); resizeGraphs(); update(35);
 </script>
